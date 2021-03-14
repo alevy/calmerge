@@ -1,0 +1,18 @@
+my_username:
+  secrets:
+    - "dontshareplease"
+    - "anotheroneforron"
+  timeout: 60
+  sources:
+    - https://calendar.google.com/calendar/ical/fredfreeman%40example.com/public/basic.ics
+    - https://calendar.google.com/calendar/ical/fredfreeman%40nologo.org/public/basic.ics
+
+some_otheruser:
+  secrets:
+    - "dontshareplease"
+    - "anotheroneforron"
+  timeout: 60
+  sources:
+    - https://calendar.google.com/calendar/ical/fredfreeman%40example.com/public/basic.ics
+    - https://calendar.google.com/calendar/ical/fredfreeman%40nologo.org/public/basic.ics
+
