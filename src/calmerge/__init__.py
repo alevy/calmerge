@@ -11,15 +11,17 @@ def fetch_calendar(url):
     calendar = Calendar.from_ical(icalRaw)
     return calendar
 
-def merge_calendars(cals):
+def merge_calendars(name, cals):
     result = Calendar()
     result['prodid'] = "//Mostly Typed LLC//Calmerge 0.1//EN"
     result['version'] = "2.0"
     result['calscale'] = "GREGORIAN"
+    result['x-wr-calname'] = name
 
     for cal in cals:
         for component in cal.subcomponents:
-            result.add_component(component)
+            if component.name == 'VEVENT':
+                result.add_component(component)
     return result
 
 class MyHandler(BaseHTTPRequestHandler):
@@ -35,7 +37,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 if not calendar or (now - calendar['last_updated']).total_seconds() > user['timeout']:
                     calendar = {
                         'last_updated': now,
-                        'calendar': merge_calendars(map(fetch_calendar, user['sources']))
+                        'calendar': merge_calendars(username, map(fetch_calendar, user['sources']))
                     }
                     self.cache[self.path] = calendar
                 self.send_response(200)
