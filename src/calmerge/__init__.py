@@ -19,14 +19,19 @@ def merge_calendars(name, cals):
     result['x-wr-calname'] = name
     now = datetime.now()
 
-    events = []
+    timezones = []
+    events = {}
     for cal in cals:
-        events += [event for event in cal.subcomponents if event.name == 'VEVENT']
-    events = sorted(events,
+        for event in [event for event in cal.subcomponents if event.name == 'VEVENT']:
+            events[event['UID']] = event
+        timezones += [event for event in cal.subcomponents if event.name == 'VTIMEZONE']
+    for timezone in timezones:
+        result.add_component(timezone)
+    events = sorted(list(events.values()),
                     key=lambda event: abs(
                         (datetime.fromordinal(event.decoded('DTSTART').toordinal()) - now)
                         .total_seconds()))
-    for event in events[0:900]:
+    for event in events[0:200]:
         result.add_component(event)
     return result
 
