@@ -17,11 +17,17 @@ def merge_calendars(name, cals):
     result['version'] = "2.0"
     result['calscale'] = "GREGORIAN"
     result['x-wr-calname'] = name
+    now = datetime.now()
 
+    events = []
     for cal in cals:
-        for component in cal.subcomponents:
-            if component.name == 'VEVENT':
-                result.add_component(component)
+        events += [event for event in cal.subcomponents if event.name == 'VEVENT']
+    events = sorted(events,
+                    key=lambda event: abs(
+                        (datetime.fromordinal(event.decoded('DTSTART').toordinal()) - now)
+                        .total_seconds()))
+    for event in events[0:900]:
+        result.add_component(event)
     return result
 
 class MyHandler(BaseHTTPRequestHandler):
